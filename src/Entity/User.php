@@ -52,7 +52,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $user->email = $this->email;
         $user->firstname = $this->firstname;
         $user->lastname = $this->lastname;
-        $user->roles = $this->roles;
         return $user;
     }
 
