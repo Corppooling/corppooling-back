@@ -6,6 +6,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Entity\User;
+use App\Entity\Department;
 
 class AppFixtures extends Fixture
 {
@@ -31,6 +32,20 @@ class AppFixtures extends Fixture
         $user2->setLastname('Pierre');
         $user2->setPassword($this->passwordEncoder->hashPassword($user2, 'password2'));
         $manager->persist($user2);
+
+        $departments = [
+            'Direction générale',
+            'Ressources humaines',
+            'Finances',
+            'Ventes',
+            'Marketing'
+        ];
+
+        foreach ($departments as $departmentName) {
+            $department = new Department();
+            $department->setName($departmentName);
+            $manager->persist($department);
+        }
 
         $manager->flush();
     }
