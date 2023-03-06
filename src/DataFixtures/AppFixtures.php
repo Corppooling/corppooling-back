@@ -24,6 +24,8 @@ class AppFixtures extends Fixture
         $user1->setFirstname('Jean');
         $user1->setLastname('Michel');
         $user1->setPassword($this->passwordEncoder->hashPassword($user1, 'password1'));
+        $user1->setUpdatedAt(new \DateTimeImmutable());
+        $user1->setCreatedAt(new \DateTimeImmutable());
         $manager->persist($user1);
 
         $user2 = new User();
@@ -31,6 +33,8 @@ class AppFixtures extends Fixture
         $user2->setFirstname('Jane');
         $user2->setLastname('Pierre');
         $user2->setPassword($this->passwordEncoder->hashPassword($user2, 'password2'));
+        $user2->setUpdatedAt(new \DateTimeImmutable());
+        $user2->setCreatedAt(new \DateTimeImmutable());
         $manager->persist($user2);
 
         $departments = [
