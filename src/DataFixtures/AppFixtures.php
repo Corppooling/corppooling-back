@@ -49,6 +49,8 @@ class AppFixtures extends Fixture
             $department = new Department();
             $department->setName($departmentName);
             $manager->persist($department);
+            $department->setUpdatedAt(new \DateTimeImmutable());
+            $department->setCreatedAt(new \DateTimeImmutable());
         }
 
         $manager->flush();
