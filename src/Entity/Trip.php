@@ -6,6 +6,7 @@ use App\Repository\TripRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=TripRepository::class)
@@ -22,72 +23,100 @@ class Trip
     /**
      * @ORM\ManyToOne(targetEntity=Company::class, inversedBy="trips")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"show_trip", "list_trip"})
+     * 
      */
     private $company;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="trips")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"show_trip", "list_trip"})
+     * 
      */
     private $announcer;
 
     /**
      * @ORM\Column(type="string", length=20)
+     * @Groups({"show_trip", "list_trip"})
+     * 
      */
     private $type;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"show_trip", "list_trip"})
+     * 
      */
     private $departure_location;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"show_trip", "list_trip"})
+     * 
      */
     private $arrival_location;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"show_trip", "list_trip"})
+     * 
      */
     private $available_seats;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"show_trip", "list_trip"})
+     * 
      */
     private $departure_time;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"show_trip", "list_trip"})
+     * 
      */
     private $message;
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * @Groups({"show_trip", "list_trip"})
+     * 
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"show_trip", "list_trip"})
+     * 
      */
     private $car_model;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"show_trip", "list_trip"})
+     * 
      */
     private $car_color;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"show_trip", "list_trip"})
+     * 
      */
     private $updated_at;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"show_trip", "list_trip"})
+     * 
      */
     private $created_at;
 
     /**
      * @ORM\OneToMany(targetEntity=Reservation::class, mappedBy="trip")
+     * @Groups({"show_trip", "list_trip"})
+     * 
      */
     private $reservations;
 

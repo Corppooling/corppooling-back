@@ -14,6 +14,9 @@ class AppFixtures extends Fixture
 {
     private $passwordEncoder;
 
+    public const USER_REFERENCE = 'lambda-user';
+    public const COMPANY_REFERENCE = 'company';
+
     public function __construct(UserPasswordHasherInterface $passwordEncoder)
     {
         $this->passwordEncoder = $passwordEncoder;
@@ -29,6 +32,8 @@ class AppFixtures extends Fixture
         $company->setUpdatedAt(new \DateTimeImmutable());
         $company->setCreatedAt(new \DateTimeImmutable());
         $manager->persist($company);
+
+        $this->addReference(self::COMPANY_REFERENCE, $company);
 
         $company2 = new Company();
         $company2->setName("Indeeed");
@@ -76,6 +81,9 @@ class AppFixtures extends Fixture
         $user1->setUpdatedAt(new \DateTimeImmutable());
         $user1->setCreatedAt(new \DateTimeImmutable());
         $manager->persist($user1);
+
+        $this->addReference(self::USER_REFERENCE, $user1);
+
 
         $user2 = new User();
         $user2->setEmail('user2@example.com');

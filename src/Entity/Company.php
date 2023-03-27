@@ -6,6 +6,7 @@ use App\Repository\CompanyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=CompanyRepository::class)
@@ -16,46 +17,62 @@ class Company
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"list_company", "show_company", "show_trip", "list_trip"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"list_company", "show_company", "show_trip", "list_trip"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"list_company", "show_company"})
+     * 
      */
     private $siren;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"list_company", "show_company"})
+     * 
      */
     private $logo;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"list_company", "show_company"})
+     * 
      */
     private $auth_code;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"list_company", "show_company"})
+     * 
      */
     private $updated_at;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"list_company", "show_company"})
+     * 
      */
     private $created_at;
 
     /**
      * @ORM\OneToMany(targetEntity=Trip::class, mappedBy="company")
+     * @Groups({"show_company"})
+     * 
      */
     private $trips;
 
     /**
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="company")
+     * @Groups({"show_company"})
+     * 
      */
     private $users;
 
