@@ -59,6 +59,11 @@ class Company
      */
     private $users;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Cluster::class, inversedBy="company")
+     */
+    private $cluster;
+
     public function __construct()
     {
         $this->trips = new ArrayCollection();
@@ -198,6 +203,18 @@ class Company
                 $user->setCompany(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCluster(): ?Cluster
+    {
+        return $this->cluster;
+    }
+
+    public function setCluster(?Cluster $cluster): self
+    {
+        $this->cluster = $cluster;
 
         return $this;
     }

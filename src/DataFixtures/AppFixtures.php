@@ -8,6 +8,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Entity\User;
 use App\Entity\Department;
 use App\Entity\Company;
+use App\Entity\Cluster;
 
 class AppFixtures extends Fixture
 {
@@ -29,6 +30,15 @@ class AppFixtures extends Fixture
         $company->setCreatedAt(new \DateTimeImmutable());
         $manager->persist($company);
 
+        $company2 = new Company();
+        $company2->setName("Indeeed");
+        $company2->setSiren("829190229");
+        $company2->setLogo("https://upload.wikimedia.org/wikipedia/commons/f/fa/Indeed_logo.png");
+        $company2->setAuthCode("12345609");
+        $company2->setUpdatedAt(new \DateTimeImmutable());
+        $company2->setCreatedAt(new \DateTimeImmutable());
+        $manager->persist($company2);
+
         $departments = [
             'Direction générale',
             'Ressources humaines',
@@ -47,6 +57,14 @@ class AppFixtures extends Fixture
             $departments_entities[] = $department;
             $manager->persist($department);
         }
+
+        $cluster = new Cluster();
+        $cluster->setName("Cluster numéro 1");
+        $cluster->setAuthCode("908972");
+        $cluster->addCompany($company);
+        $cluster->addCompany($company2);
+        $manager->persist($cluster);
+
 
         $user1 = new User();
         $user1->setEmail('user1@example.com');
