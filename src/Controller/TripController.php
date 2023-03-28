@@ -46,9 +46,7 @@ class TripController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/api/trips", name="list_trips", methods={"GET"})
-     */
+    #[Route("/api/trips", name: 'list_trips', methods: ['GET'])]
     public function listTrips(Request $request, ManagerRegistry $doctrine, SerializerInterface $serializer): JsonResponse
     {
         $repository = $doctrine->getRepository(Trip::class);
@@ -66,17 +64,13 @@ class TripController extends AbstractController
         return new JsonResponse($json);
     }
 
-    /**
-     * @Route("/api/trips/{id}", name="show_trip", methods={"GET"})
-     */
+    #[Route("/api/trips/{id}", name: 'show_trip', methods: ['GET'])]
     public function getTrip(Trip $trip, SerializerInterface $serializer): JsonResponse
     {
         return new JsonResponse(json_decode($serializer->serialize($trip, 'json', ['groups' => 'show_trip'])));
     }
 
-    /**
-     * @Route("/api/trips", name="create_trip", methods={"POST"})
-     */
+    #[Route("/api/trips", name: 'create_trip', methods: ['POST'])]
     public function postTrip(Request $request, ManagerRegistry $doctrine, SerializerInterface $serializer, EntityManagerInterface $em)
     {
         $userRepository = $doctrine->getRepository(User::class);
@@ -105,9 +99,7 @@ class TripController extends AbstractController
         return new JsonResponse($jsonTrip, Response::HTTP_CREATED);
     }
 
-    /**
-     * @Route("/api/trips/{id}", name="update_trip", methods={"PUT"})
-     */
+    #[Route("/api/trips/{id}", name: 'update_trip', methods: ['PUT'])]
     public function updateTrip(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, Trip $currentTrip): JsonResponse
     {
         $updatedTrip = $serializer->deserialize(
@@ -123,9 +115,7 @@ class TripController extends AbstractController
         return new JsonResponse($jsonTrip, Response::HTTP_CREATED);
     }
 
-    /**
-     * @Route("/api/trips/{id}", name="delete_trip", methods={"DELETE"})
-     */
+    #[Route("/api/trips/{id}", name: 'delete_trip', methods: ['DELETE'])]
     public function deleteTrip(Trip $trip, EntityManagerInterface $em)
     {
         $em->remove($trip);

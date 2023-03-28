@@ -2,83 +2,56 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\CompanyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass=CompanyRepository::class)
- */
+#[ORM\Entity(repositoryClass: CompanyRepository::class)]
+#[ApiResource]
 class Company
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     * @Groups({"list_company", "show_company", "show_trip", "list_trip"})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    #[Groups(["list_company", "show_company", "show_trip", "list_trip"])]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"list_company", "show_company", "show_trip", "list_trip"})
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(["list_company", "show_company", "show_trip", "list_trip"])]
     private $name;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"list_company", "show_company"})
-     * 
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['show_company', "list_company"])]
     private $siren;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"list_company", "show_company"})
-     * 
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['show_company', "list_company"])]
     private $logo;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"list_company", "show_company"})
-     * 
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['show_company', "list_company"])]
     private $auth_code;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     * @Groups({"list_company", "show_company"})
-     * 
-     */
+    #[Groups(['show_company', "list_company"])]
+    #[ORM\Column(type: 'datetime_immutable')]
     private $updated_at;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     * @Groups({"list_company", "show_company"})
-     * 
-     */
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['show_company', "list_company"])]
     private $created_at;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Trip::class, mappedBy="company")
-     * @Groups({"show_company"})
-     * 
-     */
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Trip::class)]
+    #[Groups(['show_company'])]
     private $trips;
 
-    /**
-     * @ORM\OneToMany(targetEntity=User::class, mappedBy="company")
-     * @Groups({"show_company"})
-     * 
-     */
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class)]
+    #[Groups(['show_company'])]
     private $users;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Cluster::class, inversedBy="company")
-     */
+    #[ORM\ManyToOne(targetEntity: Cluster::class, inversedBy: 'reservations')]
     private $cluster;
 
     public function __construct()
