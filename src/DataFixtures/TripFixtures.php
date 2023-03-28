@@ -6,7 +6,6 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Entity\Trip;
-use App\Utils\TripType;
 
 class TripFixtures extends Fixture
 {
@@ -27,7 +26,7 @@ class TripFixtures extends Fixture
             $trip->setPrice(4);
             $trip->setCarModel("Peugot 206");
             $trip->setCarColor("Rouge");
-            $trip->setType(TripType::Driver->value);
+            $trip->setType("driver");
             $trip->setAnnouncer($this->getReference(AppFixtures::USER_REFERENCE));
             $trip->setCompany($this->getReference(AppFixtures::COMPANY_REFERENCE));
             $manager->persist($trip);

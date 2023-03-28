@@ -17,6 +17,7 @@ class Trip
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"show_trip", "list_trip"})
      */
     private $id;
 
