@@ -24,23 +24,23 @@ class Company
     private $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(['show_company', "list_company"])]
+    #[Groups(['show_company', "list_company", "show_trip", "list_trip"])]
     private $siren;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(['show_company', "list_company"])]
+    #[Groups(['show_company', "list_company", "show_trip", "list_trip"])]
     private $logo;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['show_company', "list_company"])]
+    #[Groups(['show_company', "list_company", "show_trip", "list_trip"])]
     private $auth_code;
 
-    #[Groups(['show_company', "list_company"])]
+    #[Groups(['show_company', "list_company", "show_trip", "list_trip"])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $updated_at;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['show_company', "list_company"])]
+    #[Groups(['show_company', "list_company", "show_trip", "list_trip"])]
     private $created_at;
 
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Trip::class)]

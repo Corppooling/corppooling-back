@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\TripRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,7 +14,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TripRepository::class)]
-#[ApiResource]
+#[ApiResource(normalizationContext: ['groups' => ['show_trip', 'list_trip']])]
+#[ApiFilter(OrderFilter::class, properties: ['id', 'name'], arguments: ['orderParameterName' => 'order'])]
+#[ApiFilter(DateFilter::class, strategy: DateFilter::EXCLUDE_NULL, properties: ['departure_time'])]
+#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'price' => 'exact', 'type' => 'exact', 'departure_location' => 'partial', 'arrival_location' => 'partial'])]
 class Trip
 {
     #[ORM\Id]
@@ -60,28 +67,22 @@ class Trip
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(['show_trip', 'list_trip'])]
-
     private $car_model;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(['show_trip', 'list_trip'])]
-
     private $car_color;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Groups(['show_trip', 'list_trip'])]
-
     private $updated_at;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Groups(['show_trip', 'list_trip'])]
-
-
     private $created_at;
 
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'trip')]
     #[Groups(['show_trip', 'list_trip'])]
-
     private $reservations;
 
     public function __construct()

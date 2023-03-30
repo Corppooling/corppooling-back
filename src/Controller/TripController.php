@@ -46,24 +46,6 @@ class TripController extends AbstractController
         ]);
     }
 
-    #[Route("/api/trips", name: 'list_trips', methods: ['GET'])]
-    public function listTrips(Request $request, ManagerRegistry $doctrine, SerializerInterface $serializer): JsonResponse
-    {
-        $repository = $doctrine->getRepository(Trip::class);
-        $json = [];
-        $list_trips = $repository->findBy(
-            [],
-            ['departure_time' => 'DESC'],
-            $request->query->get('limit') ?? 15,
-            0
-        );
-        foreach ($list_trips as $key => $trip) {
-            $json[] = json_decode($serializer->serialize($trip, 'json', ['groups' => 'list_trip']));
-        }
-
-        return new JsonResponse($json);
-    }
-
     #[Route("/api/trips/{id}", name: 'show_trip', methods: ['GET'])]
     public function getTrip(Trip $trip, SerializerInterface $serializer): JsonResponse
     {
