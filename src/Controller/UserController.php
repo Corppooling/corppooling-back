@@ -37,9 +37,7 @@ class UserController extends AbstractController
         return false;
     }
 
-    /**
-     * @Route("/api/user/me", name="user_me", methods={"GET"})
-     */
+    #[Route("/api/user/me", name: 'user_me', methods: ['GET'])]
     public function me(Request $request, ManagerRegistry $doctrine, Security $security): JsonResponse
     {
         $user = $security->getUser();
@@ -50,9 +48,7 @@ class UserController extends AbstractController
         return new JsonResponse($user->getAll());
     }
 
-    /**
-     * @Route("/api/register", name="register")
-     */
+    #[Route("/api/register", name: 'register', methods: ['GET'])]
     public function register(Request $request, ManagerRegistry $doctrine, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         $entityManager = $doctrine->getManager();
@@ -98,9 +94,7 @@ class UserController extends AbstractController
         return $this->make_response("USER_REGISTER_SUCCESSFUL", "Registration successful", $user->getAll(), 201);
     }
 
-    /**
-     * @Route("/api/users", name="list_user", methods={"GET"})
-     */
+    #[Route("/api/users", name: 'list_user', methods: ['GET'])]
     public function listUser(Request $request, ManagerRegistry $doctrine): JsonResponse
     {
         // $entityManager = $doctrine->getManager();
@@ -116,9 +110,7 @@ class UserController extends AbstractController
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/api/users/{id}", name="user", methods={"GET"})
-     */
+    #[Route("/api/users/{id}", name: 'user', methods: ['GET'])]
     public function user(int $id, Request $request, ManagerRegistry $doctrine): JsonResponse
     {
         $repository = $doctrine->getRepository(User::class);
@@ -130,9 +122,7 @@ class UserController extends AbstractController
         return new JsonResponse($user->getAll());
     }
 
-    /**
-     * @Route("/api/users", name="update_user", methods={"PUT"})
-     */
+    #[Route("/api/users", name: 'update_user', methods: ['PUT'])]
     public function userUpdate(Request $request, ManagerRegistry $doctrine, Security $security, JWTTokenManagerInterface $JWTManager, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         $repository = $doctrine->getRepository(User::class);

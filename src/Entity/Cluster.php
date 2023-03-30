@@ -2,36 +2,28 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ClusterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=ClusterRepository::class)
- */
+#[ORM\Entity(repositoryClass: ClusterRepository::class)]
+#[ApiResource]
 class Cluster
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $auth_code;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Company::class, mappedBy="cluster")
-     */
+    #[ORM\OneToMany(targetEntity: Company::class, mappedBy: 'cluster')]
     private $company;
 
     public function __construct()

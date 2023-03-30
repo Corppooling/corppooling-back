@@ -2,42 +2,31 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ReservationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=ReservationRepository::class)
- */
+#[ORM\Entity(repositoryClass: ReservationRepository::class)]
+#[ApiResource]
 class Reservation
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="reservations")
-     */
+    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'reservations')]
     private $user;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Trip::class, inversedBy="reservations")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'reservations')]
     private $trip;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $updated_at;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $created_at;
 
     public function __construct()
