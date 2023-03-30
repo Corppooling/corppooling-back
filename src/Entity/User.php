@@ -50,18 +50,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Reservation::class, mappedBy: 'user')]
     private $reservations;
 
-
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['show_trip', 'list_trip'])]
     private $updated_at;
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['show_trip', 'list_trip'])]
     private $created_at;
 
     #[ORM\ManyToOne(targetEntity: Department::class, inversedBy: 'users')]
+    #[Groups(['show_trip', 'list_trip'])]
     private $department;
 
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['show_trip', 'list_trip'])]
     private $company;
 
     public function __construct()

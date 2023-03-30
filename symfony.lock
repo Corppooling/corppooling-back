@@ -9,6 +9,7 @@
         },
         "files": [
             "config/routes/api_platform.yaml",
+            "config/packages/api_platform.yaml",
             "src/ApiResource/.gitignore"
         ]
     },
