@@ -18,7 +18,10 @@ security:
             pattern: ^/api/
             stateless: true
             provider: users
+            entry_point: jwt
             jwt: ~
+            refresh_jwt:
+                check_path: /api/token/refresh # or, you may use the `api_refresh_token` route name
         main:
             json_login:
                 check_path: auth # The name in routes.yaml is enough for mapping
@@ -30,9 +33,13 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }
         - { path: ^/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI docs
         - { path: ^/auth, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/register, roles: PUBLIC_ACCESS }
+        
 
 when@test:
     security:
