@@ -8,10 +8,14 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Entity\User;
 use App\Entity\Department;
 use App\Entity\Company;
+use App\Entity\Cluster;
 
 class AppFixtures extends Fixture
 {
     private $passwordEncoder;
+
+    public const USER_REFERENCE = 'lambda-user';
+    public const COMPANY_REFERENCE = 'company';
 
     public function __construct(UserPasswordHasherInterface $passwordEncoder)
     {
@@ -28,6 +32,17 @@ class AppFixtures extends Fixture
         $company->setUpdatedAt(new \DateTimeImmutable());
         $company->setCreatedAt(new \DateTimeImmutable());
         $manager->persist($company);
+
+        $this->addReference(self::COMPANY_REFERENCE, $company);
+
+        $company2 = new Company();
+        $company2->setName("Indeeed");
+        $company2->setSiren("829190229");
+        $company2->setLogo("https://upload.wikimedia.org/wikipedia/commons/f/fa/Indeed_logo.png");
+        $company2->setAuthCode("12345609");
+        $company2->setUpdatedAt(new \DateTimeImmutable());
+        $company2->setCreatedAt(new \DateTimeImmutable());
+        $manager->persist($company2);
 
         $departments = [
             'Direction générale',
@@ -48,6 +63,14 @@ class AppFixtures extends Fixture
             $manager->persist($department);
         }
 
+        $cluster = new Cluster();
+        $cluster->setName("Cluster numéro 1");
+        $cluster->setAuthCode("908972");
+        $cluster->addCompany($company);
+        $cluster->addCompany($company2);
+        $manager->persist($cluster);
+
+
         $user1 = new User();
         $user1->setEmail('user1@example.com');
         $user1->setFirstname('Jean');
@@ -58,6 +81,9 @@ class AppFixtures extends Fixture
         $user1->setUpdatedAt(new \DateTimeImmutable());
         $user1->setCreatedAt(new \DateTimeImmutable());
         $manager->persist($user1);
+
+        $this->addReference(self::USER_REFERENCE, $user1);
+
 
         $user2 = new User();
         $user2->setEmail('user2@example.com');

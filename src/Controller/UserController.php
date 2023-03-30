@@ -9,13 +9,15 @@ use Symfony\Component\Routing\Annotation\Route;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Entity\User;
+use App\Entity\Company;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Security;
 
 class UserController extends AbstractController
 {
 
-    private function make_response($code, $message, $data, $http_code) {
+    private function make_response($code, $message, $data, $http_code)
+    {
         return new JsonResponse([
             'code'    => $code,
             'message' => $message,
@@ -23,20 +25,19 @@ class UserController extends AbstractController
         ], $http_code);
     }
 
-    private function check_missing_field($fields, $content) {
+    private function check_missing_field($fields, $content)
+    {
 
-        foreach($fields as $field) {
-            if(!isset($content->$field)) {
-                return $this->make_response("MISSING_" . strtoupper($field), "The '".$field."' field is required", [], 400);
+        foreach ($fields as $field) {
+            if (!isset($content->$field)) {
+                return $this->make_response("MISSING_" . strtoupper($field), "The '" . $field . "' field is required", [], 400);
             }
         }
 
         return false;
     }
 
-    /**
-     * @Route("/api/user/me", name="user_me", methods={"GET"})
-     */
+    #[Route("/api/user/me", name: 'user_me', methods: ['GET'])]
     public function me(Request $request, ManagerRegistry $doctrine, Security $security): JsonResponse
     {
         $user = $security->getUser();
@@ -47,24 +48,24 @@ class UserController extends AbstractController
         return new JsonResponse($user->getAll());
     }
 
-    /**
-     * @Route("/api/register", name="register")
-     */
+    #[Route("/api/register", name: 'register', methods: ['GET'])]
     public function register(Request $request, ManagerRegistry $doctrine, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         $entityManager = $doctrine->getManager();
         $repository = $doctrine->getRepository(User::class);
+        $companyRepository = $doctrine->getRepository(Company::class);
         $user = new User();
 
         $content = json_decode($request->getContent());
 
         $required_fields = ['email', 'password', 'firstname', 'lastname'];
 
-        if(($response = $this->check_missing_field($required_fields, $content)) !== false)
+        if (($response = $this->check_missing_field($required_fields, $content)) !== false)
             return $response;
 
         $email = $content->email;
         $firstname = $content->firstname;
+        $companyId = $content->companyId;
         $lastname = $content->lastname;
         $exist = $repository->findOneBy(['email' => $email]);
 
@@ -77,10 +78,15 @@ class UserController extends AbstractController
             $password
         );
 
+        $company = $companyRepository->find($companyId);
+
         $user->setEmail($email);
         $user->setFirstname($firstname);
         $user->setLastname($lastname);
         $user->setPassword($hashedPassword);
+        $user->setCompany($company);
+        $user->setCreatedAt(new \DateTimeImmutable());
+        $user->setUpdatedAt(new \DateTimeImmutable());
 
         $entityManager->persist($user);
         $entityManager->flush();
@@ -88,9 +94,7 @@ class UserController extends AbstractController
         return $this->make_response("USER_REGISTER_SUCCESSFUL", "Registration successful", $user->getAll(), 201);
     }
 
-    /**
-     * @Route("/api/users", name="list_user", methods={"GET"})
-     */
+    #[Route("/api/users", name: 'list_user', methods: ['GET'])]
     public function listUser(Request $request, ManagerRegistry $doctrine): JsonResponse
     {
         // $entityManager = $doctrine->getManager();
@@ -106,9 +110,7 @@ class UserController extends AbstractController
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/api/users/{id}", name="user", methods={"GET"})
-     */
+    #[Route("/api/users/{id}", name: 'user', methods: ['GET'])]
     public function user(int $id, Request $request, ManagerRegistry $doctrine): JsonResponse
     {
         $repository = $doctrine->getRepository(User::class);
@@ -120,9 +122,7 @@ class UserController extends AbstractController
         return new JsonResponse($user->getAll());
     }
 
-    /**
-     * @Route("/api/users", name="update_user", methods={"PUT"})
-     */
+    #[Route("/api/users", name: 'update_user', methods: ['PUT'])]
     public function userUpdate(Request $request, ManagerRegistry $doctrine, Security $security, JWTTokenManagerInterface $JWTManager, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         $repository = $doctrine->getRepository(User::class);
@@ -133,14 +133,14 @@ class UserController extends AbstractController
 
         $required_fields = ['email', 'password', 'firstname', 'lastname'];
 
-        if(($response = $this->check_missing_field($required_fields, $content)) !== false)
+        if (($response = $this->check_missing_field($required_fields, $content)) !== false)
             return $response;
 
-        if($user->getEmail() !== $content->email) {
+        if ($user->getEmail() !== $content->email) {
 
             $email_exist = $repository->findOneBy(['email' => $content->email]);
 
-            if($email_exist)
+            if ($email_exist)
                 return new JsonResponse([
                     "code" => "EMAIL_ALREADY_EXIST",
                     "error" => "The email already exists"
@@ -149,8 +149,8 @@ class UserController extends AbstractController
             $user->setEmail($content->email);
         }
 
-        if($content->password !== "") {
-            if(strlen($content->password) < 4 || strlen($content->password) > 30)
+        if ($content->password !== "") {
+            if (strlen($content->password) < 4 || strlen($content->password) > 30)
                 return $this->make_response("PASSWORD_WRONG_SIZE", "The password must contain at least 4 and at most 30 characters", [], 403);
 
             $hashedPassword = $passwordHasher->hashPassword(
