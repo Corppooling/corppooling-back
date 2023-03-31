@@ -8,6 +8,7 @@ use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use App\DoctrineType\TripMissing;
 use App\Repository\TripRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -38,7 +39,7 @@ class Trip
     #[Groups(['show_trip', 'list_trip'])]
     private $announcer;
 
-    #[ORM\Column(type: 'string', length: 20)]
+    #[ORM\Column(type: 'tripMissing', length: 20)]
     #[Groups(['show_trip', 'list_trip'])]
     private $type;
 
@@ -121,12 +122,12 @@ class Trip
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): ?TripMissing
     {
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(TripMissing $type): self
     {
         $this->type = $type;
 
