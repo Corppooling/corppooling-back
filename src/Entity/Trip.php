@@ -36,7 +36,7 @@ class Trip
     #[Groups(['show_trip', 'list_trip'])]
     private $announcer;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 20)]
     #[Groups(['show_trip', 'list_trip'])]
     private $type;
 
@@ -49,7 +49,7 @@ class Trip
     #[Groups(['show_trip', 'list_trip'])]
     private $arrival_location;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['show_trip', 'list_trip'])]
     private $available_seats;
 

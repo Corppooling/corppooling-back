@@ -19,7 +19,7 @@ class Company
     #[Groups(["list_company", "show_company", "show_trip", "list_trip"])]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255)]
     #[Groups(["list_company", "show_company", "show_trip", "list_trip"])]
     private $name;
 
