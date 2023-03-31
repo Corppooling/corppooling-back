@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TripRepository::class)]
-#[ApiResource(normalizationContext: ['groups' => ['show_trip', 'list_trip']])]
+#[ApiResource(normalizationContext: ['groups' => ['show_trip', 'list_trip', 'list_company', 'list_department', 'list_user']])]
 #[ApiFilter(OrderFilter::class, properties: ['id', 'name', 'created_at'], arguments: ['orderParameterName' => 'order'])]
 #[ApiFilter(DateFilter::class, strategy: DateFilter::EXCLUDE_NULL, properties: ['departure_time'])]
 #[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'price' => 'exact', 'type' => 'exact', 'departure_location' => 'partial', 'arrival_location' => 'partial'])]

@@ -17,13 +17,12 @@ class Department
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['show_trip', 'list_trip'])]
+    #[Groups(['show_department', 'list_department'])]
 
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['show_trip', 'list_trip'])]
-
+    #[Groups(['show_department', 'list_department'])]
     private $name;
 
     #[ORM\Column(type: 'datetime_immutable')]
