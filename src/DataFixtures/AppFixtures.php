@@ -9,13 +9,16 @@ use App\Entity\User;
 use App\Entity\Department;
 use App\Entity\Company;
 use App\Entity\Cluster;
+use DateTimeImmutable;
+use Faker\Factory;
 
 class AppFixtures extends Fixture
 {
     private $passwordEncoder;
 
     public const USER_REFERENCE = 'lambda-user';
-    public const COMPANY_REFERENCE = 'company';
+    public const COMPANY_FIRST_REFERENCE = 'company-first';
+    public const COMPANY_LAST_REFERENCE = 'company-last';
 
     public function __construct(UserPasswordHasherInterface $passwordEncoder)
     {
@@ -24,25 +27,23 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $company = new Company();
-        $company->setName("Hello CSE");
-        $company->setSiren("829190248");
-        $company->setLogo("https://startup.info/wp-content/uploads/2020/10/logo-hellocse-original.png");
-        $company->setAuthCode("1234569");
-        $company->setUpdatedAt(new \DateTimeImmutable());
-        $company->setCreatedAt(new \DateTimeImmutable());
-        $manager->persist($company);
+        $companies = [];
 
-        $this->addReference(self::COMPANY_REFERENCE, $company);
+        $faker = Factory::create('fr_FR');
 
-        $company2 = new Company();
-        $company2->setName("Indeeed");
-        $company2->setSiren("829190229");
-        $company2->setLogo("https://upload.wikimedia.org/wikipedia/commons/f/fa/Indeed_logo.png");
-        $company2->setAuthCode("12345609");
-        $company2->setUpdatedAt(new \DateTimeImmutable());
-        $company2->setCreatedAt(new \DateTimeImmutable());
-        $manager->persist($company2);
+        for ($i = 0; $i < 10; $i++) {
+            $company = new Company();
+            $company->setName($faker->company());
+            $company->setSiren($faker->siren());
+            $company->setLogo("https://picsum.photos/640/480");
+            $company->setAuthCode($faker->randomNumber(5));
+            $company->setUpdatedAt(new DateTimeImmutable($faker->dateTimeBetween()->format('Y-m-d H:i:s')));
+            $company->setCreatedAt(new DateTimeImmutable($faker->dateTimeBetween()->format('Y-m-d H:i:s')));
+            $companies[] = $company;
+            $manager->persist($company);
+        }
+        $this->addReference(self::COMPANY_FIRST_REFERENCE, $companies[0]);
+        $this->addReference(self::COMPANY_LAST_REFERENCE, $companies[9]);
 
         $departments = [
             'Direction générale',
@@ -52,23 +53,29 @@ class AppFixtures extends Fixture
             'Marketing'
         ];
 
+
         $departments_entities = [];
 
         foreach ($departments as $departmentName) {
             $department = new Department();
             $department->setName($departmentName);
-            $department->setUpdatedAt(new \DateTimeImmutable());
-            $department->setCreatedAt(new \DateTimeImmutable());
+            $department->setUpdatedAt(new DateTimeImmutable($faker->dateTimeBetween()->format('Y-m-d H:i:s')));
+            $department->setCreatedAt(new DateTimeImmutable($faker->dateTimeBetween()->format('Y-m-d H:i:s')));
             $departments_entities[] = $department;
             $manager->persist($department);
         }
 
-        $cluster = new Cluster();
-        $cluster->setName("Cluster numéro 1");
-        $cluster->setAuthCode("908972");
-        $cluster->addCompany($company);
-        $cluster->addCompany($company2);
-        $manager->persist($cluster);
+
+        for ($i = 0; $i < 3; $i++) {
+            $cluster = new Cluster();
+            $cluster->setName("CLSTR " . $faker->company());
+            $cluster->setAuthCode($faker->randomNumber(5));
+            for ($i = 0; $i < $faker->numberBetween(1, 3); $i++) {
+                $company =
+                    $cluster->addCompany($companies[$faker->numberBetween(0, 9)]);
+            }
+            $manager->persist($cluster);
+        }
 
 
         $user1 = new User();
@@ -76,10 +83,11 @@ class AppFixtures extends Fixture
         $user1->setFirstname('Jean');
         $user1->setLastname('Michel');
         $user1->setPassword($this->passwordEncoder->hashPassword($user1, 'password1'));
-        $user1->setCompany($company);
+        $user1->setCompany($companies[$faker->numberBetween(0, 9)]);
         $user1->setDepartment($departments_entities[1]);
-        $user1->setUpdatedAt(new \DateTimeImmutable());
-        $user1->setCreatedAt(new \DateTimeImmutable());
+        $user1->setUpdatedAt(new DateTimeImmutable($faker->dateTimeBetween()->format('Y-m-d H:i:s')));
+        $user1->setCreatedAt(new DateTimeImmutable($faker->dateTimeBetween()->format('Y-m-d H:i:s')));
+        $user1->setPhone($faker->phoneNumber());
         $manager->persist($user1);
 
         $this->addReference(self::USER_REFERENCE, $user1);
@@ -90,12 +98,12 @@ class AppFixtures extends Fixture
         $user2->setFirstname('Jane');
         $user2->setLastname('Pierre');
         $user2->setPassword($this->passwordEncoder->hashPassword($user2, 'password2'));
-        $user2->setCompany($company);
-        $user1->setDepartment($departments_entities[2]);
-        $user2->setUpdatedAt(new \DateTimeImmutable());
-        $user2->setCreatedAt(new \DateTimeImmutable());
+        $user2->setCompany($companies[$faker->numberBetween(0, 9)]);
+        $user2->setDepartment($departments_entities[2]);
+        $user2->setUpdatedAt(new DateTimeImmutable($faker->dateTimeBetween()->format('Y-m-d H:i:s')));
+        $user2->setCreatedAt(new DateTimeImmutable($faker->dateTimeBetween()->format('Y-m-d H:i:s')));
+        $user2->setPhone($faker->phoneNumber());
         $manager->persist($user2);
-
         $manager->flush();
     }
 }
