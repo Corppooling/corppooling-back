@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -16,6 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: TripRepository::class)]
 #[ApiResource(normalizationContext: ['groups' => ['show_trip', 'list_trip', 'list_company', 'list_department', 'list_user']])]
 #[ApiFilter(OrderFilter::class, properties: ['id', 'name', 'created_at'], arguments: ['orderParameterName' => 'order'])]
+#[ApiFilter(RangeFilter::class, properties: ['available_seats'])]
 #[ApiFilter(DateFilter::class, strategy: DateFilter::EXCLUDE_NULL, properties: ['departure_time'])]
 #[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'price' => 'exact', 'type' => 'exact', 'departure_location' => 'partial', 'arrival_location' => 'partial'])]
 class Trip
