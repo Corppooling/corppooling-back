@@ -38,7 +38,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', length: 50)]
     #[Groups(['show_user', 'list_user'])]
-
     private $firstname;
 
     #[ORM\Column(type: 'string', length: 50)]
@@ -67,6 +66,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['show_user', 'list_user'])]
     private $company;
+
+    #[ORM\Column(type: 'string', length: 20)]
+    private $phone;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $profile_image;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $presentation;
 
     public function __construct()
     {
@@ -297,6 +305,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCompany(?Company $company): self
     {
         $this->company = $company;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(string $phone): self
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getProfileImage(): ?string
+    {
+        return $this->profile_image;
+    }
+
+    public function setProfileImage(?string $profile_image): self
+    {
+        $this->profile_image = $profile_image;
+
+        return $this;
+    }
+
+    public function getPresentation(): ?string
+    {
+        return $this->presentation;
+    }
+
+    public function setPresentation(string $presentation): self
+    {
+        $this->presentation = $presentation;
 
         return $this;
     }

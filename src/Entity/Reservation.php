@@ -17,7 +17,7 @@ class Reservation
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'reservations')]
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'reservations')]
     private $user;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'reservations')]
