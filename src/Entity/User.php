@@ -7,7 +7,6 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use stdClass;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -20,14 +19,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['show_trip', 'list_trip'])]
+    #[Groups(['show_user', 'list_user'])]
     private $id;
 
-    #[Groups(['show_trip', 'list_trip'])]
     #[ORM\Column(type: 'string', unique: true, length: 180)]
+    #[Groups(['show_user', 'list_user'])]
     private $email;
 
     #[ORM\Column(type: 'json')]
+    #[Groups(['show_user'])]
     private $roles = [];
 
     /**
@@ -37,11 +37,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['show_trip', 'list_trip'])]
+    #[Groups(['show_user', 'list_user'])]
     private $firstname;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['show_trip', 'list_trip'])]
+    #[Groups(['show_user', 'list_user'])]
     private $lastname;
 
     #[ORM\OneToMany(targetEntity: Trip::class, mappedBy: 'announcer')]
@@ -51,21 +51,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $reservations;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['show_trip', 'list_trip'])]
+    #[Groups(['show_user', 'list_user'])]
     private $updated_at;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['show_trip', 'list_trip'])]
+    #[Groups(['show_user', 'list_user'])]
     private $created_at;
 
     #[ORM\ManyToOne(targetEntity: Department::class, inversedBy: 'users')]
-    #[Groups(['show_trip', 'list_trip'])]
+    #[Groups(['show_user', 'list_user'])]
     private $department;
 
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['show_trip', 'list_trip'])]
+    #[Groups(['show_user', 'list_user'])]
     private $company;
+
+    #[ORM\Column(type: 'string', length: 20)]
+    private $phone;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $profile_image;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $presentation;
 
     public function __construct()
     {
@@ -296,6 +305,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCompany(?Company $company): self
     {
         $this->company = $company;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(string $phone): self
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getProfileImage(): ?string
+    {
+        return $this->profile_image;
+    }
+
+    public function setProfileImage(?string $profile_image): self
+    {
+        $this->profile_image = $profile_image;
+
+        return $this;
+    }
+
+    public function getPresentation(): ?string
+    {
+        return $this->presentation;
+    }
+
+    public function setPresentation(?string $presentation): self
+    {
+        $this->presentation = $presentation;
 
         return $this;
     }

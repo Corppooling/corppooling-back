@@ -14,8 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TripRepository::class)]
-#[ApiResource(normalizationContext: ['groups' => ['show_trip', 'list_trip']])]
-#[ApiFilter(OrderFilter::class, properties: ['id', 'name'], arguments: ['orderParameterName' => 'order'])]
+#[ApiResource(normalizationContext: ['groups' => ['show_trip', 'list_trip', 'list_company', 'list_department', 'list_user']])]
+#[ApiFilter(OrderFilter::class, properties: ['id', 'name', 'created_at'], arguments: ['orderParameterName' => 'order'])]
 #[ApiFilter(DateFilter::class, strategy: DateFilter::EXCLUDE_NULL, properties: ['departure_time'])]
 #[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'price' => 'exact', 'type' => 'exact', 'departure_location' => 'partial', 'arrival_location' => 'partial'])]
 class Trip
@@ -36,7 +36,7 @@ class Trip
     #[Groups(['show_trip', 'list_trip'])]
     private $announcer;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 20)]
     #[Groups(['show_trip', 'list_trip'])]
     private $type;
 
@@ -49,7 +49,7 @@ class Trip
     #[Groups(['show_trip', 'list_trip'])]
     private $arrival_location;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['show_trip', 'list_trip'])]
     private $available_seats;
 

@@ -16,31 +16,31 @@ class Company
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["list_company", "show_company", "show_trip", "list_trip"])]
+    #[Groups(["list_company", "show_company"])]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["list_company", "show_company", "show_trip", "list_trip"])]
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["list_company", "show_company"])]
     private $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(['show_company', "list_company", "show_trip", "list_trip"])]
+    #[Groups(['show_company', "list_company"])]
     private $siren;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(['show_company', "list_company", "show_trip", "list_trip"])]
+    #[Groups(['show_company', "list_company"])]
     private $logo;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['show_company', "list_company", "show_trip", "list_trip"])]
+    #[Groups(['show_company', "list_company"])]
     private $auth_code;
 
-    #[Groups(['show_company', "list_company", "show_trip", "list_trip"])]
+    #[Groups(['show_company', "list_company"])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $updated_at;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['show_company', "list_company", "show_trip", "list_trip"])]
+    #[Groups(['show_company', "list_company"])]
     private $created_at;
 
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Trip::class)]
