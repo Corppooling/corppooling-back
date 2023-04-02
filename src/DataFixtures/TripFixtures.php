@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\DoctrineType\TripMissing;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\Trip;
@@ -28,7 +29,7 @@ class TripFixtures extends Fixture
             $trip->setPrice($faker->numberBetween(0, 25));
             $trip->setCarModel($faker->vehicle());
             $trip->setCarColor($faker->colorName());
-            $trip->setType($faker->boolean() ? "driver" : "passager");
+            $trip->setType($faker->boolean() ? TripMissing::Driver : TripMissing::Passenger);
             $trip->setAnnouncer($this->getReference(AppFixtures::USER_REFERENCE));
             $trip->setCompany($this->getReference($faker->boolean() ? AppFixtures::COMPANY_FIRST_REFERENCE : AppFixtures::COMPANY_LAST_REFERENCE));
             $manager->persist($trip);
