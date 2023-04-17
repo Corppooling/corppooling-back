@@ -46,12 +46,6 @@ class TripController extends AbstractController
         ]);
     }
 
-    #[Route("/api/trips/{id}", name: 'show_trip', methods: ['GET'])]
-    public function getTrip(Trip $trip, SerializerInterface $serializer): JsonResponse
-    {
-        return new JsonResponse(json_decode($serializer->serialize($trip, 'json', ['groups' => 'show_trip'])));
-    }
-
     #[Route("/api/trips", name: 'create_trip', methods: ['POST'])]
     public function postTrip(Request $request, ManagerRegistry $doctrine, SerializerInterface $serializer, EntityManagerInterface $em)
     {
