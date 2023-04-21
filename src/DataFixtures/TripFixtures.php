@@ -22,7 +22,7 @@ class TripFixtures extends Fixture
             $trip->setDepartureLocation($faker->city());
             $trip->setArrivalLocation($faker->city());
             $trip->setAvailableSeats($faker->numberBetween(1, 4));
-            $trip->setDepartureTime($faker->dateTimeBetween('+1 week', '+120 week')->format('Y-m-d H:i:s'));
+            $trip->setDepartureTime(new DateTimeImmutable($faker->dateTimeBetween('+1 week', '+120 week')->format('Y-m-d H:i:s')));
             $trip->setUpdatedAt(new DateTimeImmutable($faker->dateTimeBetween('-1 week', '-1 days')->format('Y-m-d H:i:s')));
             $trip->setCreatedAt(new DateTimeImmutable($faker->dateTimeBetween('-3 week', '-1 week')->format('Y-m-d H:i:s')));
             $trip->setMessage($faker->text(200));
