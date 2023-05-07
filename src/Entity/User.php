@@ -73,6 +73,38 @@ class User extends BaseEntity implements UserInterface, PasswordAuthenticatedUse
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $presentation;
 
+    #[Groups(['show_timestamps'])]
+    #[ORM\Column(type: 'datetime_immutable')]
+    private $updated_at;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['show_timestamps'])]
+    private $created_at;
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updated_at): self
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
     public function __construct()
     {
         $this->trips = new ArrayCollection();

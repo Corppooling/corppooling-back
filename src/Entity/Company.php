@@ -20,6 +20,14 @@ class Company extends BaseEntity
     #[Groups(["list_company", "show_company"])]
     private $id;
 
+    #[Groups(['show_timestamps'])]
+    #[ORM\Column(type: 'datetime_immutable')]
+    private $updated_at;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['show_timestamps'])]
+    private $created_at;
+
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(["list_company", "show_company"])]
     private $name;
@@ -174,6 +182,29 @@ class Company extends BaseEntity
     public function setCluster(?Cluster $cluster): self
     {
         $this->cluster = $cluster;
+
+        return $this;
+    }
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updated_at): self
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    {
+        $this->created_at = $created_at;
 
         return $this;
     }
