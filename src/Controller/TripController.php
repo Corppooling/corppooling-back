@@ -54,7 +54,7 @@ class TripController extends AbstractController
 
         $content = json_decode($request->getContent());
 
-        $required_fields = ['announcerId', "companyId", 'type', 'available_seats', 'departure_time', "arrival_location", "departure_location"];
+        $required_fields = ['announcerId', "companyId", 'type', 'departure_time', "arrival_location", "departure_location"];
 
         if (($response = $this->check_missing_field($required_fields, $content)) !== false)
             return $response;
