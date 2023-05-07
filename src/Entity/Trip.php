@@ -10,11 +10,13 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\DoctrineType\TripMissing;
 use App\Repository\TripRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: TripRepository::class)]
 #[ApiResource(normalizationContext: ['groups' => ['show_trip', 'list_trip', 'list_company', 'list_department', 'list_user']], order: ['departure_time' => 'ASC'])]
 #[ApiFilter(OrderFilter::class, properties: ['id', 'name', 'created_at', 'departure_time', 'price'], arguments: ['orderParameterName' => 'order'])]
@@ -91,26 +93,6 @@ class Trip
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
-    }
-
-    /**
-     * Gets triggered only on insert
-
-     * @ORM\PrePersist
-     */
-    public function onPrePersist()
-    {
-        $this->created_at = new \DateTimeImmutable("now");
-    }
-
-    /**
-     * Gets triggered every time on update
-
-     * @ORM\PreUpdate
-     */
-    public function onPreUpdate()
-    {
-        $this->updated_at = new \DateTimeImmutable("now");
     }
 
     public function getId(): ?int
@@ -302,5 +284,18 @@ class Trip
         }
 
         return $this;
+    }
+    #[ORM\PrePersist]
+    public function onPrePersist()
+    {
+        $this->created_at = new DateTimeImmutable();
+        $this->updated_at = new DateTimeImmutable();
+    }
+
+
+    #[ORM\PreUpdate]
+    public function onPreUpdate()
+    {
+        $this->updated_at = new DateTimeImmutable();
     }
 }
