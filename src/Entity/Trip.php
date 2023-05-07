@@ -93,6 +93,26 @@ class Trip
         $this->reservations = new ArrayCollection();
     }
 
+    /**
+     * Gets triggered only on insert
+
+     * @ORM\PrePersist
+     */
+    public function onPrePersist()
+    {
+        $this->created_at = new \DateTimeImmutable("now");
+    }
+
+    /**
+     * Gets triggered every time on update
+
+     * @ORM\PreUpdate
+     */
+    public function onPreUpdate()
+    {
+        $this->updated_at = new \DateTimeImmutable("now");
+    }
+
     public function getId(): ?int
     {
         return $this->id;
