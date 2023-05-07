@@ -103,6 +103,7 @@ class AppFixtures extends Fixture
         $user2->setUpdatedAt(new DateTimeImmutable($faker->dateTimeBetween()->format('Y-m-d H:i:s')));
         $user2->setCreatedAt(new DateTimeImmutable($faker->dateTimeBetween()->format('Y-m-d H:i:s')));
         $user2->setPhone($faker->phoneNumber());
+        $user2->setRoles(['ROLE_USER', 'ROLE_MANAGER']);
         $manager->persist($user2);
         $manager->flush();
     }
