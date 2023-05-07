@@ -7,10 +7,12 @@ use App\Repository\ReservationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\BaseEntity;
+
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 #[ApiResource]
-class Reservation
+class Reservation extends BaseEntity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,12 +24,6 @@ class Reservation
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'reservations')]
     private $trip;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private $updated_at;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private $created_at;
 
     public function __construct()
     {
@@ -71,30 +67,6 @@ class Reservation
     public function setTrip(?Trip $trip): self
     {
         $this->trip = $trip;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updated_at;
-    }
-
-    public function setUpdatedAt(\DateTimeImmutable $updated_at): self
-    {
-        $this->updated_at = $updated_at;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
-    {
-        $this->created_at = $created_at;
 
         return $this;
     }
