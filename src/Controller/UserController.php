@@ -10,8 +10,10 @@ use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Entity\User;
 use App\Entity\Company;
+use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\Security;
+use \Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class UserController extends AbstractController
 {
@@ -38,14 +40,15 @@ class UserController extends AbstractController
     }
 
     #[Route("/api/user/me", name: 'user_me', methods: ['GET'])]
-    public function me(Request $request, ManagerRegistry $doctrine, Security $security): JsonResponse
+    public function me(UserRepository $userRepository, Security $security, SerializerInterface $serializer): JsonResponse
     {
         $user = $security->getUser();
 
-        $repository = $doctrine->getRepository(User::class);
-        $user = $repository->findOneBy(['email' => $user->getUserIdentifier()]);
 
-        return new JsonResponse($user->getAll());
+        $user = $userRepository->findOneBy(['email' => $user->getUserIdentifier()]);
+        $usr = $userRepository->findOneByIdJoinedToCategory($user->getId());
+        $jsonTrip = json_decode($serializer->serialize($usr, 'json', []));
+        return new JsonResponse($jsonTrip);
     }
 
     #[Route("/api/register", name: 'register', methods: ['GET'])]
@@ -92,34 +95,6 @@ class UserController extends AbstractController
         $entityManager->flush();
 
         return $this->make_response("USER_REGISTER_SUCCESSFUL", "Registration successful", $user->getAll(), 201);
-    }
-
-    #[Route("/api/users", name: 'list_user', methods: ['GET'])]
-    public function listUser(Request $request, ManagerRegistry $doctrine): JsonResponse
-    {
-        // $entityManager = $doctrine->getManager();
-        $repository = $doctrine->getRepository(User::class);
-
-        $list_user = $repository->findAll();
-        $data = [];
-        foreach ($list_user as $key => $user) {
-            $tmp_obj = $user->getAll();
-            $data[] = $tmp_obj;
-        }
-
-        return new JsonResponse($data);
-    }
-
-    #[Route("/api/users/{id}", name: 'user', methods: ['GET'])]
-    public function user(int $id, Request $request, ManagerRegistry $doctrine): JsonResponse
-    {
-        $repository = $doctrine->getRepository(User::class);
-        $user = $repository->find($id);
-
-        if (!isset($user))
-            return $this->make_response("USER_NOT_FOUND", "The user was not found", [], 404);
-
-        return new JsonResponse($user->getAll());
     }
 
     #[Route("/api/users", name: 'update_user', methods: ['PUT'])]

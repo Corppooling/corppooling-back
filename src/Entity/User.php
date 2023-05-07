@@ -13,6 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ApiResource(normalizationContext: ['groups' => ['show_user', 'list_trip', 'list_department', 'list_company']])]
 #[ApiResource]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -45,9 +46,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $lastname;
 
     #[ORM\OneToMany(targetEntity: Trip::class, mappedBy: 'announcer')]
+    #[Groups(['show_user', 'list_user'])]
     private $trips;
 
     #[ORM\ManyToMany(targetEntity: Reservation::class, mappedBy: 'user')]
+    #[Groups(['show_user', 'list_user'])]
     private $reservations;
 
     #[ORM\Column(type: 'datetime_immutable')]
