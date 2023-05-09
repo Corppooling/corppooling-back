@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\UserRepository;
+use App\Entity\BaseEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -13,9 +14,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource(normalizationContext: ['groups' => ['show_user', 'list_trip', 'list_department', 'list_company']])]
+#[ApiResource(normalizationContext: ['groups' => ['show_user', 'list_trip', 'list_department', 'list_company', 'show_timestamps']])]
 #[ApiResource]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User extends BaseEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -53,13 +54,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['show_user', 'list_user'])]
     private $reservations;
 
-    #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['show_user', 'list_user'])]
-    private $updated_at;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['show_user', 'list_user'])]
-    private $created_at;
 
     #[ORM\ManyToOne(targetEntity: Department::class, inversedBy: 'users')]
     #[Groups(['show_user', 'list_user'])]
@@ -78,6 +72,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $presentation;
+
+    #[Groups(['show_timestamps'])]
+    #[ORM\Column(type: 'datetime_immutable')]
+    private $updated_at;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['show_timestamps'])]
+    private $created_at;
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updated_at): self
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
 
     public function __construct()
     {
@@ -260,30 +286,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->reservations->removeElement($reservation)) {
             $reservation->removeUser($this);
         }
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updated_at;
-    }
-
-    public function setUpdatedAt(\DateTimeImmutable $updated_at): self
-    {
-        $this->updated_at = $updated_at;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
-    {
-        $this->created_at = $created_at;
 
         return $this;
     }

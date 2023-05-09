@@ -46,35 +46,6 @@ class TripController extends AbstractController
         ]);
     }
 
-    // #[Route("/api/trips", name: 'create_trip', methods: ['POST'])]
-    // public function postTrip(Request $request, ManagerRegistry $doctrine, SerializerInterface $serializer, EntityManagerInterface $em)
-    // {
-    //     $userRepository = $doctrine->getRepository(User::class);
-    //     $companyRepository = $doctrine->getRepository(Company::class);
-
-    //     $content = json_decode($request->getContent());
-
-    //     $required_fields = ['announcerId', "companyId", 'type', 'departure_time', "arrival_location", "departure_location"];
-
-    //     if (($response = $this->check_missing_field($required_fields, $content)) !== false)
-    //         return $response;
-
-    //     $trip = $serializer->deserialize($request->getContent(), Trip::class, 'json');
-    //     $announcer = $userRepository->find($content->announcerId);
-    //     $company = $companyRepository->find($content->companyId);
-    //     $trip->setAnnouncer($announcer);
-    //     $trip->setCompany($company);
-    //     $trip->setCreatedAt(new \DateTimeImmutable());
-    //     $trip->setUpdatedAt(new \DateTimeImmutable());
-
-    //     $em->persist($trip);
-    //     $em->flush();
-
-    //     $jsonTrip = json_decode($serializer->serialize($trip, 'json', ['groups' => 'show_trip']));
-
-    //     return new JsonResponse($jsonTrip, Response::HTTP_CREATED);
-    // }
-
     #[Route("/api/trips/{id}", name: 'update_trip', methods: ['PUT'])]
     public function updateTrip(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, Trip $currentTrip): JsonResponse
     {

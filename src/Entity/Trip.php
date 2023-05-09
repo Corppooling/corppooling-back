@@ -10,7 +10,7 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\DoctrineType\TripMissing;
 use App\Repository\TripRepository;
-use DateTimeImmutable;
+use App\Entity\BaseEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,13 +23,21 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiFilter(RangeFilter::class, properties: ['available_seats'])]
 #[ApiFilter(DateFilter::class, strategy: DateFilter::EXCLUDE_NULL, properties: ['departure_time'])]
 #[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'price' => 'exact', 'type' => 'exact', 'departure_location' => 'partial', 'arrival_location' => 'partial'])]
-class Trip
+class Trip extends BaseEntity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(['show_trip', 'list_trip'])]
     private $id;
+
+    #[Groups(['show_timestamps'])]
+    #[ORM\Column(type: 'datetime_immutable')]
+    private $updated_at;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['show_timestamps'])]
+    private $created_at;
 
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'trips')]
     #[ORM\JoinColumn(nullable: false)]
@@ -78,14 +86,6 @@ class Trip
     #[Groups(['show_trip', 'list_trip'])]
     private $car_color;
 
-    #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['show_trip', 'list_trip'])]
-    private $updated_at;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['show_trip', 'list_trip'])]
-    private $created_at;
-
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'trip')]
     #[Groups(['show_trip', 'list_trip'])]
     private $reservations;
@@ -103,6 +103,30 @@ class Trip
     public function getCompany(): ?Company
     {
         return $this->company;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updated_at): self
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    {
+        $this->created_at = $created_at;
+
+        return $this;
     }
 
     public function setCompany(?Company $company): self
@@ -232,30 +256,6 @@ class Trip
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updated_at;
-    }
-
-    public function setUpdatedAt(\DateTimeImmutable $updated_at): self
-    {
-        $this->updated_at = $updated_at;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Reservation>
      */
@@ -284,18 +284,5 @@ class Trip
         }
 
         return $this;
-    }
-    #[ORM\PrePersist]
-    public function onPrePersist()
-    {
-        $this->created_at = new DateTimeImmutable();
-        $this->updated_at = new DateTimeImmutable();
-    }
-
-
-    #[ORM\PreUpdate]
-    public function onPreUpdate()
-    {
-        $this->updated_at = new DateTimeImmutable();
     }
 }

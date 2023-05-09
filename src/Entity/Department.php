@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\DepartmentRepository;
+use App\Entity\BaseEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: DepartmentRepository::class)]
 #[ApiResource]
-class Department
+class Department extends BaseEntity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,15 +22,17 @@ class Department
 
     private $id;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['show_department', 'list_department'])]
-    private $name;
-
+    #[Groups(['show_timestamps'])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $updated_at;
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['show_timestamps'])]
     private $created_at;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['show_department', 'list_department'])]
+    private $name;
 
     #[ORM\OneToMany(mappedBy: 'department', targetEntity: User::class)]
     private $users;
@@ -52,30 +55,6 @@ class Department
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updated_at;
-    }
-
-    public function setUpdatedAt(\DateTimeImmutable $updated_at): self
-    {
-        $this->updated_at = $updated_at;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
-    {
-        $this->created_at = $created_at;
 
         return $this;
     }
@@ -106,6 +85,30 @@ class Department
                 $user->setDepartment(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updated_at): self
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    {
+        $this->created_at = $created_at;
 
         return $this;
     }

@@ -7,27 +7,31 @@ use App\Repository\ReservationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\BaseEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 #[ApiResource]
-class Reservation
+class Reservation extends BaseEntity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
+    #[Groups(['show_timestamps'])]
+    #[ORM\Column(type: 'datetime_immutable')]
+    private $updated_at;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['show_timestamps'])]
+    private $created_at;
+
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'reservations')]
     private $user;
 
     #[ORM\ManyToOne(targetEntity: Trip::class, inversedBy: 'reservations')]
     private $trip;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private $updated_at;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private $created_at;
 
     public function __construct()
     {
@@ -74,7 +78,6 @@ class Reservation
 
         return $this;
     }
-
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updated_at;
