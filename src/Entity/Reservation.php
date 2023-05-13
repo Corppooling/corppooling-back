@@ -7,12 +7,13 @@ use App\Repository\ReservationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\BaseEntity;
+use DateTimeImmutable;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ApiResource]
-class Reservation extends BaseEntity
+class Reservation
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -100,5 +101,19 @@ class Reservation extends BaseEntity
         $this->created_at = $created_at;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function onPrePersist()
+    {
+        $this->setCreatedAt(new DateTimeImmutable());
+        $this->setUpdatedAt(new DateTimeImmutable());
+    }
+
+
+    #[ORM\PreUpdate]
+    public function onPreUpdate()
+    {
+        $this->setUpdatedAt(new DateTimeImmutable());
     }
 }

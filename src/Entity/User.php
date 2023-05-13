@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\UserRepository;
-use App\Entity\BaseEntity;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,9 +14,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ApiResource(normalizationContext: ['groups' => ['show_user', 'list_trip', 'list_department', 'list_company', 'show_timestamps']])]
 #[ApiResource]
-class User extends BaseEntity implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -348,5 +349,19 @@ class User extends BaseEntity implements UserInterface, PasswordAuthenticatedUse
         $this->presentation = $presentation;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function onPrePersist()
+    {
+        $this->setCreatedAt(new DateTimeImmutable());
+        $this->setUpdatedAt(new DateTimeImmutable());
+    }
+
+
+    #[ORM\PreUpdate]
+    public function onPreUpdate()
+    {
+        $this->setUpdatedAt(new DateTimeImmutable());
     }
 }

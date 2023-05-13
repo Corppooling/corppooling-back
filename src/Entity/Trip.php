@@ -10,7 +10,7 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\DoctrineType\TripMissing;
 use App\Repository\TripRepository;
-use App\Entity\BaseEntity;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,7 +23,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiFilter(RangeFilter::class, properties: ['available_seats'])]
 #[ApiFilter(DateFilter::class, strategy: DateFilter::EXCLUDE_NULL, properties: ['departure_time'])]
 #[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'price' => 'exact', 'type' => 'exact', 'departure_location' => 'partial', 'arrival_location' => 'partial'])]
-class Trip extends BaseEntity
+class Trip
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -284,5 +284,19 @@ class Trip extends BaseEntity
         }
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function onPrePersist()
+    {
+        $this->setCreatedAt(new DateTimeImmutable());
+        $this->setUpdatedAt(new DateTimeImmutable());
+    }
+
+
+    #[ORM\PreUpdate]
+    public function onPreUpdate()
+    {
+        $this->setUpdatedAt(new DateTimeImmutable());
     }
 }
