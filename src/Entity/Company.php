@@ -53,7 +53,7 @@ class Company
     #[Groups(['show_company'])]
     private $users;
 
-    #[ORM\ManyToOne(targetEntity: Cluster::class, inversedBy: 'reservations')]
+    #[ORM\ManyToOne(targetEntity: Cluster::class, inversedBy: 'company')]
     private $cluster;
 
     public function __construct()

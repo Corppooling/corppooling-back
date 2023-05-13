@@ -15,10 +15,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: TripRepository::class)]
-#[ApiResource(normalizationContext: ['groups' => ['show_trip', 'list_trip', 'list_company', 'list_department', 'list_user']], order: ['departure_time' => 'ASC'])]
+#[ApiResource(normalizationContext: [AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true, 'groups' => ['show_trip', 'list_trip', 'list_company', 'list_department', 'list_user']], order: ['departure_time' => 'ASC'])]
 #[ApiFilter(OrderFilter::class, properties: ['id', 'name', 'created_at', 'departure_time', 'price'], arguments: ['orderParameterName' => 'order'])]
 #[ApiFilter(RangeFilter::class, properties: ['available_seats'])]
 #[ApiFilter(DateFilter::class, strategy: DateFilter::EXCLUDE_NULL, properties: ['departure_time'])]
@@ -46,7 +48,7 @@ class Trip
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'trips')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['show_trip', 'list_trip'])]
+    #[Groups(['show_trip'])]
     private $announcer;
 
     #[ORM\Column(type: 'tripMissing', length: 20)]
@@ -86,13 +88,13 @@ class Trip
     #[Groups(['show_trip', 'list_trip'])]
     private $car_color;
 
-    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'trip')]
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'reservations')]
     #[Groups(['show_trip', 'list_trip'])]
-    private $reservations;
+    #[MaxDepth(2)]
+    private $members;
 
     public function __construct()
     {
-        $this->reservations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -257,31 +259,25 @@ class Trip
     }
 
     /**
-     * @return Collection<int, Reservation>
+     * @return Collection<int, User>
      */
-    public function getReservations(): Collection
+    public function getUser(): Collection
     {
-        return $this->reservations;
+        return $this->members;
     }
 
-    public function addReservation(Reservation $reservation): self
+    public function addUser(User $user): self
     {
-        if (!$this->reservations->contains($reservation)) {
-            $this->reservations[] = $reservation;
-            $reservation->setTrip($this);
+        if (!$this->members->contains($user)) {
+            $this->members[] = $user;
         }
 
         return $this;
     }
 
-    public function removeReservation(Reservation $reservation): self
+    public function removeUser(User $user): self
     {
-        if ($this->reservations->removeElement($reservation)) {
-            // set the owning side to null (unless already changed)
-            if ($reservation->getTrip() === $this) {
-                $reservation->setTrip(null);
-            }
-        }
+        $this->members->removeElement($user);
 
         return $this;
     }
