@@ -51,7 +51,7 @@ class UserController extends AbstractController
         $jsonTrip = json_decode($serializer->serialize($usr, 'json', []));
         return new JsonResponse($jsonTrip);
     }
-    #[Route("/api/users/reservations", name: 'user_add_reservation', methods: ['POST'])]
+    #[Route("/api/reservations", name: 'user_add_reservation', methods: ['POST'])]
     public function postReservation(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, UserRepository $userRepository, TripRepository $tripRepository)
     {
         $parameters = json_decode($request->getContent(), true);
@@ -63,11 +63,12 @@ class UserController extends AbstractController
         return new JsonResponse(json_decode($serializer->serialize($user, 'json', [])));
     }
 
-    #[Route("/api/users/{userId}/trips/{tripId}", name: 'user_remove_trip', methods: ['DELETE'])]
-    public function deleteReservation(SerializerInterface $serializer, EntityManagerInterface $em, UserRepository $userRepository, TripRepository $tripRepository, int $userId, int $tripId)
+    #[Route("/api/reservations", name: 'user_remove_trip', methods: ['DELETE'])]
+    public function deleteReservation(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, UserRepository $userRepository, TripRepository $tripRepository)
     {
-        $user = $userRepository->findOneBy(['id' => $userId]);
-        $trip = $tripRepository->findOneBy(['id' => $tripId]);
+        $parameters = json_decode($request->getContent(), true);
+        $user = $userRepository->findOneBy(['id' => $parameters['userId']]);
+        $trip = $tripRepository->findOneBy(['id' => $parameters['tripId']]);
         $user->removeReservation($trip);
         $em->persist($user);
         $em->flush();
