@@ -278,7 +278,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->reservations->contains($reservation)) {
             $this->reservations[] = $reservation;
-            $reservation->addUser($this);
+            $reservation->addMember($this);
         }
 
         return $this;
@@ -287,7 +287,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeReservation(Trip $reservation): self
     {
         if ($this->reservations->removeElement($reservation)) {
-            $reservation->removeUser($this);
+            $reservation->removeMember($this);
         }
 
         return $this;
