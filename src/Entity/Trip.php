@@ -95,6 +95,7 @@ class Trip
 
     public function __construct()
     {
+        $this->members = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -261,23 +262,23 @@ class Trip
     /**
      * @return Collection<int, User>
      */
-    public function getUser(): Collection
+    public function getMembers(): Collection
     {
         return $this->members;
     }
 
-    public function addUser(User $user): self
+    public function addMember(User $member): self
     {
-        if (!$this->members->contains($user)) {
-            $this->members[] = $user;
+        if (!$this->members->contains($member)) {
+            $this->members[] = $member;
         }
 
         return $this;
     }
 
-    public function removeUser(User $user): self
+    public function removeMember(User $member): self
     {
-        $this->members->removeElement($user);
+        $this->members->removeElement($member);
 
         return $this;
     }
