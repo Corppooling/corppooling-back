@@ -3,16 +3,17 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Entity\BaseEntity;
 use App\Repository\CompanyRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
 #[ApiResource]
-class Company extends BaseEntity
+class Company
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -52,7 +53,7 @@ class Company extends BaseEntity
     #[Groups(['show_company'])]
     private $users;
 
-    #[ORM\ManyToOne(targetEntity: Cluster::class, inversedBy: 'reservations')]
+    #[ORM\ManyToOne(targetEntity: Cluster::class, inversedBy: 'company')]
     private $cluster;
 
     public function __construct()
@@ -207,5 +208,19 @@ class Company extends BaseEntity
         $this->created_at = $created_at;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function onPrePersist()
+    {
+        $this->setCreatedAt(new DateTimeImmutable());
+        $this->setUpdatedAt(new DateTimeImmutable());
+    }
+
+
+    #[ORM\PreUpdate]
+    public function onPreUpdate()
+    {
+        $this->setUpdatedAt(new DateTimeImmutable());
     }
 }

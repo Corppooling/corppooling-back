@@ -65,10 +65,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             FROM App\Entity\User user
             INNER JOIN user.company company
             INNER JOIN user.department department
-            INNER JOIN user.trips trips
+            LEFT JOIN user.trips trips
             WHERE user.id = :id'
         )->setParameter('id', $userId);
-
         return $query->getOneOrNullResult();
     }
 

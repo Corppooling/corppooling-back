@@ -4,19 +4,21 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\UserRepository;
-use App\Entity\BaseEntity;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
-
+use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource(normalizationContext: ['groups' => ['show_user', 'list_trip', 'list_department', 'list_company', 'show_timestamps']])]
+#[ORM\HasLifecycleCallbacks]
+#[ApiResource(normalizationContext: ['groups' => ['show_user', 'list_trip', 'list_department', 'list_company', 'show_timestamps'], AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true])]
 #[ApiResource]
-class User extends BaseEntity implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -50,8 +52,9 @@ class User extends BaseEntity implements UserInterface, PasswordAuthenticatedUse
     #[Groups(['show_user', 'list_user'])]
     private $trips;
 
-    #[ORM\ManyToMany(targetEntity: Reservation::class, mappedBy: 'user')]
-    #[Groups(['show_user', 'list_user'])]
+    #[ORM\ManyToMany(targetEntity: Trip::class, mappedBy: 'members')]
+    #[Groups(['show_user'])]
+    #[MaxDepth(2)]
     private $reservations;
 
 
@@ -264,27 +267,27 @@ class User extends BaseEntity implements UserInterface, PasswordAuthenticatedUse
     }
 
     /**
-     * @return Collection<int, Reservation>
+     * @return Collection<int, Trip>
      */
     public function getReservations(): Collection
     {
         return $this->reservations;
     }
 
-    public function addReservation(Reservation $reservation): self
+    public function addReservation(Trip $reservation): self
     {
         if (!$this->reservations->contains($reservation)) {
             $this->reservations[] = $reservation;
-            $reservation->addUser($this);
+            $reservation->addMember($this);
         }
 
         return $this;
     }
 
-    public function removeReservation(Reservation $reservation): self
+    public function removeReservation(Trip $reservation): self
     {
         if ($this->reservations->removeElement($reservation)) {
-            $reservation->removeUser($this);
+            $reservation->removeMember($this);
         }
 
         return $this;
@@ -348,5 +351,19 @@ class User extends BaseEntity implements UserInterface, PasswordAuthenticatedUse
         $this->presentation = $presentation;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function onPrePersist()
+    {
+        $this->setCreatedAt(new DateTimeImmutable());
+        $this->setUpdatedAt(new DateTimeImmutable());
+    }
+
+
+    #[ORM\PreUpdate]
+    public function onPreUpdate()
+    {
+        $this->setUpdatedAt(new DateTimeImmutable());
     }
 }

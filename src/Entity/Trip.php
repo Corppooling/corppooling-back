@@ -10,20 +10,22 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\DoctrineType\TripMissing;
 use App\Repository\TripRepository;
-use App\Entity\BaseEntity;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: TripRepository::class)]
-#[ApiResource(normalizationContext: ['groups' => ['show_trip', 'list_trip', 'list_company', 'list_department', 'list_user']], order: ['departure_time' => 'ASC'])]
+#[ApiResource(normalizationContext: [AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true, 'groups' => ['show_trip', 'list_trip', 'list_company', 'list_department', 'list_user']], order: ['departure_time' => 'ASC'])]
 #[ApiFilter(OrderFilter::class, properties: ['id', 'name', 'created_at', 'departure_time', 'price'], arguments: ['orderParameterName' => 'order'])]
 #[ApiFilter(RangeFilter::class, properties: ['available_seats'])]
 #[ApiFilter(DateFilter::class, strategy: DateFilter::EXCLUDE_NULL, properties: ['departure_time'])]
-#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'price' => 'exact', 'type' => 'exact', 'departure_location' => 'partial', 'arrival_location' => 'partial'])]
-class Trip extends BaseEntity
+#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'price' => 'exact', 'type' => 'exact', 'departure_location' => 'partial', 'arrival_location' => 'partial', 'company.id' => 'exact'])]
+class Trip
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -46,7 +48,7 @@ class Trip extends BaseEntity
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'trips')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['show_trip', 'list_trip'])]
+    #[Groups(['show_trip'])]
     private $announcer;
 
     #[ORM\Column(type: 'tripMissing', length: 20)]
@@ -86,13 +88,14 @@ class Trip extends BaseEntity
     #[Groups(['show_trip', 'list_trip'])]
     private $car_color;
 
-    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'trip')]
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'reservations')]
     #[Groups(['show_trip', 'list_trip'])]
-    private $reservations;
+    #[MaxDepth(2)]
+    private $members;
 
     public function __construct()
     {
-        $this->reservations = new ArrayCollection();
+        $this->members = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -257,32 +260,40 @@ class Trip extends BaseEntity
     }
 
     /**
-     * @return Collection<int, Reservation>
+     * @return Collection<int, User>
      */
-    public function getReservations(): Collection
+    public function getMembers(): Collection
     {
-        return $this->reservations;
+        return $this->members;
     }
 
-    public function addReservation(Reservation $reservation): self
+    public function addMember(User $member): self
     {
-        if (!$this->reservations->contains($reservation)) {
-            $this->reservations[] = $reservation;
-            $reservation->setTrip($this);
+        if (!$this->members->contains($member)) {
+            $this->members[] = $member;
         }
 
         return $this;
     }
 
-    public function removeReservation(Reservation $reservation): self
+    public function removeMember(User $member): self
     {
-        if ($this->reservations->removeElement($reservation)) {
-            // set the owning side to null (unless already changed)
-            if ($reservation->getTrip() === $this) {
-                $reservation->setTrip(null);
-            }
-        }
+        $this->members->removeElement($member);
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function onPrePersist()
+    {
+        $this->setCreatedAt(new DateTimeImmutable());
+        $this->setUpdatedAt(new DateTimeImmutable());
+    }
+
+
+    #[ORM\PreUpdate]
+    public function onPreUpdate()
+    {
+        $this->setUpdatedAt(new DateTimeImmutable());
     }
 }

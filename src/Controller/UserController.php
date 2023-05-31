@@ -10,7 +10,9 @@ use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Entity\User;
 use App\Entity\Company;
+use App\Repository\TripRepository;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use \Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -44,11 +46,33 @@ class UserController extends AbstractController
     {
         $user = $security->getUser();
 
-
         $user = $userRepository->findOneBy(['email' => $user->getUserIdentifier()]);
         $usr = $userRepository->findOneByIdJoinedToCategory($user->getId());
         $jsonTrip = json_decode($serializer->serialize($usr, 'json', []));
         return new JsonResponse($jsonTrip);
+    }
+    #[Route("/api/reservations", name: 'user_add_reservation', methods: ['POST'])]
+    public function postReservation(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, UserRepository $userRepository, TripRepository $tripRepository)
+    {
+        $parameters = json_decode($request->getContent(), true);
+        $user = $userRepository->findOneBy(['id' => $parameters['userId']]);
+        $trip = $tripRepository->findOneBy(['id' => $parameters['tripId']]);
+        $user->addReservation($trip);
+        $em->persist($user);
+        $em->flush();
+        return new JsonResponse(json_decode($serializer->serialize($user, 'json', [])));
+    }
+
+    #[Route("/api/reservations", name: 'user_remove_trip', methods: ['DELETE'])]
+    public function deleteReservation(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, UserRepository $userRepository, TripRepository $tripRepository)
+    {
+        $parameters = json_decode($request->getContent(), true);
+        $user = $userRepository->findOneBy(['id' => $parameters['userId']]);
+        $trip = $tripRepository->findOneBy(['id' => $parameters['tripId']]);
+        $user->removeReservation($trip);
+        $em->persist($user);
+        $em->flush();
+        return new JsonResponse(json_decode($serializer->serialize($user, 'json', [])));
     }
 
     #[Route("/api/register", name: 'register', methods: ['GET'])]
