@@ -54,6 +54,7 @@ class Company
     private $users;
 
     #[ORM\ManyToOne(targetEntity: Cluster::class, inversedBy: 'company')]
+    #[Groups(['show_company', "list_company"])]
     private $cluster;
 
     public function __construct()
