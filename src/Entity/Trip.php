@@ -24,7 +24,7 @@ use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 #[ApiFilter(OrderFilter::class, properties: ['id', 'name', 'created_at', 'departure_time', 'price'], arguments: ['orderParameterName' => 'order'])]
 #[ApiFilter(RangeFilter::class, properties: ['available_seats'])]
 #[ApiFilter(DateFilter::class, strategy: DateFilter::EXCLUDE_NULL, properties: ['departure_time'])]
-#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'price' => 'exact', 'type' => 'exact', 'departure_location' => 'partial', 'arrival_location' => 'partial'])]
+#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'price' => 'exact', 'type' => 'exact', 'departure_location' => 'partial', 'arrival_location' => 'partial', 'company.id' => 'exact'])]
 class Trip
 {
     #[ORM\Id]
