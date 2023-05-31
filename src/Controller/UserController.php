@@ -48,7 +48,7 @@ class UserController extends AbstractController
 
         $user = $userRepository->findOneBy(['email' => $user->getUserIdentifier()]);
         $usr = $userRepository->findOneByIdJoinedToCategory($user->getId());
-        $jsonTrip = json_decode($serializer->serialize($usr, 'json', ['groups' => ['show_user', 'list_company', 'list_department', 'list_trip']]));
+        $jsonTrip = json_decode($serializer->serialize($usr, 'json', ['groups' => ['show_user', 'show_company', 'list_department', 'list_trip']]));
         return new JsonResponse($jsonTrip);
     }
     #[Route("/api/reservations", name: 'user_add_reservation', methods: ['POST'])]

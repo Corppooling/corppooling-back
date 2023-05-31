@@ -48,7 +48,7 @@ class Trip
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'trips')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['show_trip'])]
+    #[Groups(['show_trip', 'list_trip'])]
     private $announcer;
 
     #[ORM\Column(type: 'tripMissing', length: 20)]
