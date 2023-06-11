@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\DepartmentRepository;
 use DateTimeImmutable;
@@ -13,6 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: DepartmentRepository::class)]
 #[ApiResource]
+#[ApiFilter(SearchFilter::class, properties: ['company.id' => 'exact'])]
 class Department
 {
     #[ORM\Id]
