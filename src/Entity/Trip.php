@@ -18,6 +18,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 
+use function PHPSTORM_META\type;
+
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: TripRepository::class)]
 #[ApiResource(normalizationContext: [AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true, 'groups' => ['show_trip', 'list_trip', 'list_company', 'list_department', 'list_user']], order: ['departure_time' => 'ASC'])]
@@ -51,7 +53,7 @@ class Trip
     #[Groups(['show_trip', 'list_trip'])]
     private $announcer;
 
-    #[ORM\Column(type: 'tripMissing', length: 20)]
+    #[ORM\Column(type: 'string', enumType: TripMissing::class, length: 20)]
     #[Groups(['show_trip', 'list_trip'])]
     private $type;
 
