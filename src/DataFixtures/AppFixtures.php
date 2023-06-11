@@ -61,6 +61,7 @@ class AppFixtures extends Fixture
             $department->setName($departmentName);
             $department->setUpdatedAt(new DateTimeImmutable($faker->dateTimeBetween()->format('Y-m-d H:i:s')));
             $department->setCreatedAt(new DateTimeImmutable($faker->dateTimeBetween()->format('Y-m-d H:i:s')));
+            $department->setCompany($companies[0]);
             $departments_entities[] = $department;
             $manager->persist($department);
         }
