@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
@@ -17,6 +18,7 @@ use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(normalizationContext: ['groups' => ['show_user', 'list_trip', 'list_department', 'list_company', 'show_timestamps'], AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true])]
+#[ApiFilter(SearchFilter::class, properties: ['company.id' => 'exact'])]
 #[ApiResource]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {

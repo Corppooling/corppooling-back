@@ -37,6 +37,10 @@ class Department
     #[ORM\OneToMany(mappedBy: 'department', targetEntity: User::class)]
     private $users;
 
+    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'departments')]
+    #[Groups(['show_department', 'list_department'])]
+    private $company;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -125,5 +129,17 @@ class Department
     public function onPreUpdate()
     {
         $this->setUpdatedAt(new DateTimeImmutable());
+    }
+
+    public function getCompany(): ?Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Company $company): self
+    {
+        $this->company = $company;
+
+        return $this;
     }
 }

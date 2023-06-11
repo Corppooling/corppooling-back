@@ -57,10 +57,15 @@ class Company
     #[Groups(['show_company', "list_company"])]
     private $cluster;
 
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Department::class)]
+    #[Groups(['show_company', "list_company"])]
+    private $departments;
+
     public function __construct()
     {
         $this->trips = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->departments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -223,5 +228,35 @@ class Company
     public function onPreUpdate()
     {
         $this->setUpdatedAt(new DateTimeImmutable());
+    }
+
+    /**
+     * @return Collection<int, Department>
+     */
+    public function getDepartments(): Collection
+    {
+        return $this->departments;
+    }
+
+    public function addDepartment(Department $department): self
+    {
+        if (!$this->departments->contains($department)) {
+            $this->departments[] = $department;
+            $department->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDepartment(Department $department): self
+    {
+        if ($this->departments->removeElement($department)) {
+            // set the owning side to null (unless already changed)
+            if ($department->getCompany() === $this) {
+                $department->setCompany(null);
+            }
+        }
+
+        return $this;
     }
 }
