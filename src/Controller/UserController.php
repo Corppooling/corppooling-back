@@ -10,6 +10,7 @@ use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Entity\User;
 use App\Entity\Company;
+use App\Entity\Department;
 use App\Repository\TripRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -81,19 +82,22 @@ class UserController extends AbstractController
         $entityManager = $doctrine->getManager();
         $repository = $doctrine->getRepository(User::class);
         $companyRepository = $doctrine->getRepository(Company::class);
+        $departmentRepository = $doctrine->getRepository(Department::class);
         $user = new User();
 
         $content = json_decode($request->getContent());
 
-        $required_fields = ['email', 'password', 'firstname', 'lastname'];
+        $required_fields = ['email', 'password', 'firstname', 'lastname', 'auth_code', "department_id"];
 
         if (($response = $this->check_missing_field($required_fields, $content)) !== false)
             return $response;
 
         $email = $content->email;
         $firstname = $content->firstname;
-        $companyId = $content->companyId;
+        $company = $companyRepository->findOneBy(['auth_code' => $content->auth_code]); ;
         $lastname = $content->lastname;
+        $department = $departmentRepository->find($content->department_id);
+        $phone = isset($content->phone) ? $content->phone : "";
         $exist = $repository->findOneBy(['email' => $email]);
 
         if (isset($exist))
@@ -105,13 +109,13 @@ class UserController extends AbstractController
             $password
         );
 
-        $company = $companyRepository->find($companyId);
-
         $user->setEmail($email);
         $user->setFirstname($firstname);
         $user->setLastname($lastname);
         $user->setPassword($hashedPassword);
         $user->setCompany($company);
+        $user->setDepartment($department);
+        $user->setPhone($phone);
         $user->setCreatedAt(new \DateTimeImmutable());
         $user->setUpdatedAt(new \DateTimeImmutable());
 
