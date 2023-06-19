@@ -76,7 +76,7 @@ class UserController extends AbstractController
         return new JsonResponse(json_decode($serializer->serialize($user, 'json', [])));
     }
 
-    #[Route("/api/register", name: 'register', methods: ['GET'])]
+    #[Route("/api/register", name: 'register', methods: ['POST'])]
     public function register(Request $request, ManagerRegistry $doctrine, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         $entityManager = $doctrine->getManager();
