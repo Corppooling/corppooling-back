@@ -107,5 +107,19 @@ class AppFixtures extends Fixture
         $user2->setRoles(['ROLE_USER', 'ROLE_MANAGER']);
         $manager->persist($user2);
         $manager->flush();
+
+        $admin = new User();
+        $admin->setEmail('admin@corppooling.com');
+        $admin->setFirstname('AD');
+        $admin->setLastname('Min');
+        $admin->setPassword($this->passwordEncoder->hashPassword($admin, 'corppooling'));
+        $admin->setCompany($companies[$faker->numberBetween(0, 9)]);
+        $admin->setDepartment($departments_entities[2]);
+        $admin->setUpdatedAt(new DateTimeImmutable($faker->dateTimeBetween()->format('Y-m-d H:i:s')));
+        $admin->setCreatedAt(new DateTimeImmutable($faker->dateTimeBetween()->format('Y-m-d H:i:s')));
+        $admin->setPhone($faker->phoneNumber());
+        $admin->setRoles(['ROLE_USER', 'ROLE_ADMIN']);
+        $manager->persist($admin);
+        $manager->flush();
     }
 }
