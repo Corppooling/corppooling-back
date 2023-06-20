@@ -7,12 +7,16 @@ use App\Repository\CompanyRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Metadata\ApiFilter;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
 #[ApiResource]
+#[ApiFilter(SearchFilter::class, properties: ['auth_code' => 'exact'])]
 class Company
 {
     #[ORM\Id]
