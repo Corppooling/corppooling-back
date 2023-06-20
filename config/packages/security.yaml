@@ -11,9 +11,20 @@ security:
                 class: App\Entity\User
                 property: email
     firewalls:
+        admin:
+            pattern: ^/admin
+
+            form_login:
+                # "app_login" is the name of the route created previously
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
+            logout:
+                path: app_logout
         dev:
             pattern: ^/_(profiler|wdt)
             security: false
+        
         api:
             pattern: ^/api/
             stateless: true
@@ -31,6 +42,7 @@ security:
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
             logout:
                 path: app_logout
+        
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
@@ -39,7 +51,8 @@ security:
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI docs
         - { path: ^/auth, roles: PUBLIC_ACCESS }
-        - { path: ^/admin, roles: PUBLIC_ACCESS }
+        - { path: ^/admin/login, roles: PUBLIC_ACCESS }
+        - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
         
