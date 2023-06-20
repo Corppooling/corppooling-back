@@ -72,12 +72,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $company;
 
     #[ORM\Column(type: 'string', length: 20)]
+    #[Groups(['show_user', 'list_user'])]
     private $phone;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['show_user', 'list_user'])]
     private $profile_image;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['show_user', 'list_user'])]
     private $presentation;
 
     #[Groups(['show_timestamps'])]
