@@ -116,6 +116,7 @@ class UserController extends AbstractController
         $user->setCompany($company);
         $user->setDepartment($department);
         $user->setPhone($phone);
+        $user->setRoles(["ROLE_USER"]);
         $user->setCreatedAt(new \DateTimeImmutable());
         $user->setUpdatedAt(new \DateTimeImmutable());
 
