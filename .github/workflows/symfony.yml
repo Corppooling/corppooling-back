@@ -41,7 +41,7 @@ jobs:
       - name: Run schema
         run: sudo php bin/console --env=test doctrine:schema:create
       - name: Load fixtures
-        run: sudo php bin/console --env=test doctrine:fixtures:load
+        run: sudo php bin/console --env=test doctrine:fixtures:load -n
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
           DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
