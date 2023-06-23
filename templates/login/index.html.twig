@@ -1,24 +1,90 @@
-
 {% extends 'base.html.twig' %}
 
 {# ... #}
 
 {% block body %}
-    {% if error %}
-        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+	{% if error %}
+		<div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+	{% endif %}
 
-    <form action="{{ path('app_login') }}" method="post">
-        <label for="username">Email:</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}">
+	<style>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="_password">
+		.login-form {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+		}
 
-        <input type="hidden" name="_target_path" value="/admin">
+		.login-form-box {
+			background-color: #fff;
+			box-shadow: rgba(149, 157, 165, 0.2) 0 8px 24px;
+			padding: 10px 30px 30px;
+			width: 600px;
+			border-radius: 5px;
+		}
 
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+		.login-form-header {
+			margin-bottom: 40px;
+		}
 
-        <button type="submit">login</button>
-    </form>
+		.login-form-header h2 {
+			font-size: 26px;
+			font-weight: 700;
+			font-family: Arial, Helvetica, sans-serif;
+		}
+
+		.login-form-header p {
+			font-size: 18px;
+			font-family: Arial, Helvetica, sans-serif;
+			line-height: 0;
+		}
+
+		.login-form-header p a {
+			text-decoration: none;
+			color: #0e74bd;
+		}
+
+		.input-item {
+			margin-bottom: 20px;
+		}
+
+		.input-item input {
+			width: calc(100% - 30px);
+			padding: 16px;
+			border-radius: 5px;
+			border: 1px solid #787878;
+		}
+
+		button {
+			margin-top: 5px;
+			background-color: #0e74bd;
+			border: none;
+			color: #fff;
+			padding: 12px 40px;
+			font-size: 20px;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+	</style>
+	<div class="login-form">
+		<div class="login-form-box">
+			<div class="login-form-header">
+				<h2>Connexion</h2>
+			</div>
+			<form action="{{ path('app_login') }}" method="post">
+				<div class="input-item">
+					<input type="text" id="username" name="_username" placeholder="Nom d'utilisateur / Email" value="{{ last_username }}">
+				</div>
+				<div class="input-item">
+					<input type="password" placeholder="Mot de passe" id="password" name="_password">
+				</div>
+				<input type="hidden" name="_target_path" value="/admin">
+
+				<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+				<button type="submit">Se connecter</button>
+			</form>
+		</div>
+	</div>
 {% endblock %}
