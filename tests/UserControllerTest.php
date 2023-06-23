@@ -36,7 +36,6 @@ class UserControllerTest extends WebTestCase
         $client->loginUser($adminUser);
 
         $client->request('GET', '/admin');
-        $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
     }
