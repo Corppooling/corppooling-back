@@ -40,8 +40,6 @@ jobs:
           touch data/database.sqlite
       - name: Run schema
         run: sudo php bin/console --env=test doctrine:schema:create
-      - name: Run migrations
-        run: sudo php bin/console --env=test doctrine:migrations:migrate
       - name: Load fixtures
         run: sudo php bin/console --env=test doctrine:fixtures:load
       - name: Execute tests (Unit and Feature tests) via PHPUnit
