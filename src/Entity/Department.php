@@ -11,10 +11,20 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\GetCollection;
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: DepartmentRepository::class)]
 #[ApiResource]
+#[Post(security: "is_granted('ROLE_USER')")]
+#[Delete(security: "is_granted('ROLE_USER')")]
+#[Get]
+#[Put(security: "is_granted('ROLE_USER')")]
+#[GetCollection]
 #[ApiFilter(SearchFilter::class, properties: ['company.id' => 'exact'])]
 class Department
 {
